@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import TheWelcome from "../components/TheWelcome.vue";
+import { useCounterStore } from '@/stores/counter';
+
+const { increment } = useCounterStore();
+
 </script>
 
 <template>
-	<main>
-		<TheWelcome />
-	</main>
+	<h1>Home Page</h1>
+	<div>
+		<button @click="increment">+</button>
+	</div>
 </template>
