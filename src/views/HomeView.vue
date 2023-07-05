@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCounterStore } from '@/stores/counter';
+import { RouterLink, RouterView } from 'vue-router'
 
 const { increment } = useCounterStore();
 
@@ -10,4 +11,5 @@ const { increment } = useCounterStore();
 	<div>
 		<button @click="increment">+</button>
 	</div>
+	<RouterView />
 </template>
