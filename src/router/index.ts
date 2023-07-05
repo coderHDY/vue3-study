@@ -1,24 +1,29 @@
-import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+import { createRouter } from "vue-router";
+import { routeDefault, routeLanguageProvider } from "@/utils/constance";
+import LanguageProvider from "@/views/LanguageProvider/LanguageProvider.vue";
+import ErrorView from "@/views/ErrorView/ErrorView.vue";
+import webHistory from "@/utils/webHistory";
 
 const router = createRouter({
-	history: createWebHistory(import.meta.env.BASE_URL),
+	history: webHistory,
 	routes: [
 		{
 			path: "/",
-			redirect: "/en-US",
+			redirect: routeDefault,
 		},
 		{
-			path: "/:path(zh-CN|es-ES|en-US)",
-			name: "home",
-			component: HomeView,
+			path: routeLanguageProvider,
+			component: LanguageProvider,
 			children: [
 				{
-					path: "about",
-					name: "about",
-					component: () => import("../views/AboutView.vue"),
+					path: "login",
+					component: () => import("@/views/LoginView/LoginView.vue"),
 				},
 			],
+		},
+		{
+			path: "/:w+",
+			component: ErrorView,
 		},
 	],
 });
