@@ -1,3 +1,126 @@
+<script setup lang="ts">
+import { ref, watch, onMounted } from "vue";
+
+const props = defineProps({
+	modelValue: {
+		type: Date,
+		required: true,
+	},
+});
+const emit = defineEmits(["update:modelValue"]);
+
+const years = ref<any[]>([]);
+const months = ref<any[]>([]);
+const days = ref<any[]>([]);
+const selectedYear = ref(props.modelValue.getFullYear());
+const selectedMonth = ref(props.modelValue.getMonth());
+const selectedDay = ref(props.modelValue.getDate());
+console.log(props.modelValue.getDate());
+
+const updateYears = () => {
+	const currentYear = new Date().getFullYear();
+	const startYear = currentYear - 100;
+	const endYear = currentYear + 100;
+	years.value = Array.from({ length: endYear - startYear }, (_, i) => startYear + i);
+};
+
+const updateMonths = () => {
+	months.value = Array.from({ length: 12 }, (_, i) => `${i + 1}`);
+};
+
+const updateDays = () => {
+	const year = selectedYear.value;
+	const month = selectedMonth.value + 1;
+	const daysInMonth = new Date(year, month, 0).getDate();
+	days.value = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+};
+
+const selectYear = (year: number, $event: any) => {
+	$event.target.scrollIntoView({
+		block: "center",
+		inline: "center",
+	});
+	selectedYear.value = year;
+	updateDays();
+	emit("update:modelValue", new Date(selectedYear.value, selectedMonth.value, selectedDay.value));
+};
+
+const selectMonth = (month: number, $event: any) => {
+	$event.target.scrollIntoView({
+		block: "center",
+		inline: "center",
+	});
+	selectedMonth.value = month;
+	updateDays();
+	emit("update:modelValue", new Date(selectedYear.value, selectedMonth.value, selectedDay.value));
+};
+
+const selectDay = (day: number, $event: any) => {
+	$event.target.scrollIntoView({
+		block: "center",
+		inline: "center",
+	});
+	console.log(day);
+	selectedDay.value = day;
+	console.log(new Date(selectedYear.value, selectedMonth.value, selectedDay.value));
+	emit("update:modelValue", new Date(selectedYear.value, selectedMonth.value, selectedDay.value));
+};
+
+watch(
+	() => props.modelValue,
+	newValue => {
+		selectedYear.value = newValue.getFullYear();
+		selectedMonth.value = newValue.getMonth();
+		selectedDay.value = newValue.getDate();
+		updateDays();
+	},
+);
+
+updateYears();
+updateMonths();
+updateDays();
+
+// 滚动选择
+const yearRef = ref();
+const monthRef = ref();
+const dateRef = ref();
+const yearTimeout = ref();
+const monthTimeout = ref();
+const dateTimeout = ref();
+const onYearScroll = (e: any) => {
+	clearTimeout(yearTimeout.value);
+	yearTimeout.value = setTimeout(() => {
+		const ITEM_HEIGHT = 30;
+		const { scrollTop, children } = e.target;
+		const pickNum = Math.floor((scrollTop + ITEM_HEIGHT) / ITEM_HEIGHT);
+		children[pickNum]?.click?.();
+	}, 300);
+};
+const onMonthScroll = (e: any) => {
+	clearTimeout(monthTimeout.value);
+	monthTimeout.value = setTimeout(() => {
+		const ITEM_HEIGHT = 30;
+		const { scrollTop, children } = e.target;
+		const pickNum = Math.floor((scrollTop + ITEM_HEIGHT) / ITEM_HEIGHT);
+		children[pickNum]?.click?.();
+	}, 300);
+};
+const onDateScroll = (e: any) => {
+	clearTimeout(dateTimeout.value);
+	dateTimeout.value = setTimeout(() => {
+		const ITEM_HEIGHT = 30;
+		const { scrollTop, children } = e.target;
+		const pickNum = Math.floor((scrollTop + ITEM_HEIGHT) / ITEM_HEIGHT);
+		children[pickNum]?.click?.();
+	}, 300);
+};
+onMounted(() => {
+	yearRef.value.children[101]?.click?.();
+	monthRef.value.children[1]?.click?.();
+	dateRef.value.children[1]?.click?.();
+});
+</script>
+
 <template>
 	<div class="date-picker">
 		<div class="date-picker-item">
@@ -20,10 +143,10 @@
 				<div class="date-picker-option" key="null" />
 				<div
 					class="date-picker-option"
-					v-for="(month, index) in months"
+					v-for="month in months"
 					:key="month"
-					:class="{ active: index === selectedMonth }"
-					@click="selectMonth(index, $event)"
+					:class="{ active: month - 1 === selectedMonth }"
+					@click="selectMonth(month - 1, $event)"
 				>
 					{{ month }}
 				</div>
@@ -35,10 +158,10 @@
 				<div class="date-picker-option" key="null" />
 				<div
 					class="date-picker-option"
-					v-for="(day, index) in days"
+					v-for="day in days"
 					:key="day"
-					:class="{ active: index === selectedDay }"
-					@click="selectDay(index, $event)"
+					:class="{ active: day === selectedDay }"
+					@click="selectDay(day, $event)"
 				>
 					{{ day }}
 				</div>
@@ -48,129 +171,10 @@
 	</div>
 </template>
 
-<script setup>
-import { ref, watch, onMounted } from "vue";
-
-const props = defineProps({
-	value: {
-		type: Date,
-		required: true,
-	},
-});
-
-const years = ref([]);
-const months = ref([]);
-const days = ref([]);
-const selectedYear = ref(new Date().getFullYear());
-const selectedMonth = ref(new Date().getMonth() + 1);
-const selectedDay = ref(new Date().getDate());
-
-const updateYears = () => {
-	const currentYear = new Date().getFullYear();
-	const startYear = currentYear - 100;
-	const endYear = currentYear + 100;
-	years.value = Array.from({ length: endYear - startYear }, (_, i) => startYear + i);
-};
-
-const updateMonths = () => {
-	months.value = Array.from({ length: 12 }, (_, i) => `${i + 1}`);
-};
-
-const updateDays = () => {
-	const year = selectedYear.value;
-	const month = selectedMonth.value + 1;
-	const daysInMonth = new Date(year, month, 0).getDate();
-	days.value = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-};
-
-const selectYear = (year, $event) => {
-	$event.target.scrollIntoView({
-		block: "center",
-		inline: "center",
-	});
-	selectedYear.value = year;
-	updateDays();
-	// emit("input", new Date(selectedYear.value, selectedMonth.value, selectedDay.value));
-};
-
-const selectMonth = (month, $event) => {
-	$event.target.scrollIntoView({
-		block: "center",
-		inline: "center",
-	});
-	selectedMonth.value = month;
-	updateDays();
-	// emit("input", new Date(selectedYear.value, selectedMonth.value, selectedDay.value));
-};
-
-const selectDay = (day, $event) => {
-	$event.target.scrollIntoView({
-		block: "center",
-		inline: "center",
-	});
-	selectedDay.value = day;
-	// emit("input", new Date(selectedYear.value, selectedMonth.value, selectedDay.value));
-};
-
-watch(
-	() => props.value,
-	newValue => {
-		selectedYear.value = newValue.getFullYear();
-		selectedMonth.value = newValue.getMonth();
-		selectedDay.value = newValue.getDate();
-		updateDays();
-	},
-);
-
-updateYears();
-updateMonths();
-updateDays();
-
-// 滚动选择
-const yearRef = ref();
-const monthRef = ref();
-const dateRef = ref();
-const yearTimeout = ref();
-const monthTimeout = ref();
-const dateTimeout = ref();
-const onYearScroll = e => {
-	clearTimeout(yearTimeout.value);
-	yearTimeout.value = setTimeout(() => {
-		const ITEM_HEIGHT = 30;
-		const { scrollTop, children } = e.target;
-		const pickNum = Math.floor((scrollTop + ITEM_HEIGHT) / ITEM_HEIGHT);
-		children[pickNum]?.click?.();
-	}, 300);
-};
-const onMonthScroll = e => {
-	clearTimeout(monthTimeout.value);
-	monthTimeout.value = setTimeout(() => {
-		const ITEM_HEIGHT = 30;
-		const { scrollTop, children } = e.target;
-		const pickNum = Math.floor((scrollTop + ITEM_HEIGHT) / ITEM_HEIGHT);
-		children[pickNum]?.click?.();
-	}, 300);
-};
-const onDateScroll = e => {
-	clearTimeout(dateTimeout.value);
-	dateTimeout.value = setTimeout(() => {
-		const ITEM_HEIGHT = 30;
-		const { scrollTop, children } = e.target;
-		const pickNum = Math.floor((scrollTop + ITEM_HEIGHT) / ITEM_HEIGHT);
-		children[pickNum]?.click?.();
-	}, 300);
-};
-onMounted(() => {
-	yearRef.value.children[101]?.click?.();
-	monthRef.value.children[1]?.click?.();
-	dateRef.value.children[1]?.click?.();
-});
-</script>
-
 <style scoped>
 .date-picker {
-	margin-top: 100px;
-
+	margin-top: 4rem;
+	position: relative;
 	display: flex;
 	justify-content: space-around;
 	height: 100px;
@@ -182,7 +186,7 @@ onMounted(() => {
 	text-align: center;
 	margin-right: 20px;
 	height: 100%;
-	overflow: auto;
+	overflow: hidden;
 }
 .date-picker-wheel {
 	display: flex;
@@ -207,7 +211,10 @@ onMounted(() => {
 	overscroll-behavior: none;
 }
 
+.date-picker-option {
+	color: #376b54;
+}
 .date-picker-option.active {
-	color: #42b983;
+	color: #ffffff;
 }
 </style>
