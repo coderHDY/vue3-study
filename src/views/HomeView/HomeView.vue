@@ -5,6 +5,7 @@ const props = defineProps({
 	modelValue: {
 		type: Date,
 		required: true,
+		default: new Date(),
 	},
 });
 const emit = defineEmits(["update:modelValue"]);
@@ -15,7 +16,6 @@ const days = ref<any[]>([]);
 const selectedYear = ref(props.modelValue.getFullYear());
 const selectedMonth = ref(props.modelValue.getMonth());
 const selectedDay = ref(props.modelValue.getDate());
-console.log(props.modelValue.getDate());
 
 const updateYears = () => {
 	const currentYear = new Date().getFullYear();
@@ -30,6 +30,7 @@ const updateMonths = () => {
 
 const updateDays = () => {
 	const year = selectedYear.value;
+	// 下一个月的第0天等于上一个月的最后一天
 	const month = selectedMonth.value + 1;
 	const daysInMonth = new Date(year, month, 0).getDate();
 	days.value = Array.from({ length: daysInMonth }, (_, i) => i + 1);
@@ -60,9 +61,7 @@ const selectDay = (day: number, $event: any) => {
 		block: "center",
 		inline: "center",
 	});
-	console.log(day);
 	selectedDay.value = day;
-	console.log(new Date(selectedYear.value, selectedMonth.value, selectedDay.value));
 	emit("update:modelValue", new Date(selectedYear.value, selectedMonth.value, selectedDay.value));
 };
 
@@ -212,9 +211,9 @@ onMounted(() => {
 }
 
 .date-picker-option {
-	color: #376b54;
+	color: #000000;
 }
 .date-picker-option.active {
-	color: #ffffff;
+	color: #20842a;
 }
 </style>
