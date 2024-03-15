@@ -15,7 +15,7 @@ const $counter = useCounterStore();
 		<div>{{ $counter.count }}</div>
 		<div class="transBtn">
 			<button @click="$counter.increment()">+</button>
-			<button @click="nav.push('/about')">jump to about</button>
+			<button @click="nav.push('/')">jump to home</button>
 		</div>
 	</div>
 </template>
