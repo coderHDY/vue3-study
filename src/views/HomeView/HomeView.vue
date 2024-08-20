@@ -1,9 +1,9 @@
 <template>
   <div>
     <h1>当前路径: {{ currentPath }}</h1>
-    <button @click="jump2A">aaa</button>
-    <button @click="jump2B">bbb</button>
-    <button @click="jump2About">about</button>
+    <div><button @click="jump2A">aaa</button></div>
+    <div><button @click="jump2B">bbb</button></div>
+    <div><button @click="jump2About">about</button></div>
   </div>
 </template>
 
