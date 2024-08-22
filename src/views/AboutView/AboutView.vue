@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, nextTick } from "vue";
+import { useRouter } from "vue-router";
 
+const nav = useRouter();
 const count = ref(0);
 
 const add = () => {
@@ -27,6 +29,9 @@ const del = async () => {
       <div>
         <button @click="del">-1</button>
       </div>
+      <div>
+        <button @click="nav.push('/')">jump to home</button>
+      </div>
     </div>
   </div>
 </template>
@@ -41,6 +46,7 @@ const del = async () => {
     padding: 5px 10px;
     cursor: pointer;
     background-color: #dbe4dc;
+    animation: bigger 1s infinite;
   }
 }
 </style>
