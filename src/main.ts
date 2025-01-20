@@ -9,6 +9,7 @@ import "@mdi/font/css/materialdesignicons.min.css";
 import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
+import permission from "./utils/permision";
 
 const vuetify = createVuetify({
 	components,
@@ -16,6 +17,7 @@ const vuetify = createVuetify({
 });
 
 const app = createApp(App);
+app.use(permission);
 
 app.use(createPinia());
 app.use(vuetify);

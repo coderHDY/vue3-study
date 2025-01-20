@@ -1,39 +1,45 @@
 <template>
-  <div>
-    <h1>当前路径: {{ currentPath }}</h1>
-    <div><button @click="jump2A">aaa</button></div>
-    <div><button @click="jump2B">bbb</button></div>
-    <div><button @click="jump2About">about</button></div>
-  </div>
+	<div>
+		<h1>当前路径: {{ currentPath }}</h1>
+		<div><button @click="jump2A">aaa</button></div>
+		<div><button @click="jump2B">bbb</button></div>
+		<div><button @click="jump2About">about</button></div>
+	</div>
+
+	<div>
+		<div><button v-permission="'edit'">编辑</button></div>
+		<div><button v-permission="'add'">新建</button></div>
+		<div><button v-permission="'detail'">详细</button></div>
+	</div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      currentPath: this.$route.path,
-    };
-  },
-  methods: {
-    jump2A() {
-      this.$router.push("/a/aaa");
-    },
-    jump2B() {
-      this.$router.push("/a/bbb");
-    },
-    jump2About() {
-      this.$router.push("/about");
-    },
-  },
-  watch: {
-    $route: {
-      handler(to, from) {
-        // 路由发生变化时执行的操作
-        console.log("路由变化:", to, from);
-        this.currentPath = to.params.xx; // 更新当前路径
-      },
-      immediate: true, // 首次加载时也执行
-    },
-  },
+	data() {
+		return {
+			currentPath: this.$route.path,
+		};
+	},
+	methods: {
+		jump2A() {
+			this.$router.push("/a/aaa");
+		},
+		jump2B() {
+			this.$router.push("/a/bbb");
+		},
+		jump2About() {
+			this.$router.push("/about");
+		},
+	},
+	watch: {
+		$route: {
+			handler(to, from) {
+				// 路由发生变化时执行的操作
+				console.log("路由变化:", to, from);
+				this.currentPath = to.params.xx; // 更新当前路径
+			},
+			immediate: true, // 首次加载时也执行
+		},
+	},
 };
 </script>
